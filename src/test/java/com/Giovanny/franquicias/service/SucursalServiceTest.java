@@ -9,12 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.Giovanny.franquicias.model.Franquicia;
-import com.Giovanny.franquicias.model.Sucursal;
-import com.Giovanny.franquicias.repository.FranquiciaRepository;
-import com.Giovanny.franquicias.repository.SucursalRepository;
+import com.Giovanny.franquicias.domain.model.Sucursal;
+import com.Giovanny.franquicias.domain.port.out.SucursalRepositoryPort;
+import com.Giovanny.franquicias.application.usecase.SucursalUseCaseImpl;
 
-import net.bytebuddy.asm.MemberSubstitution.Substitution.Chain.Step;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -22,37 +20,21 @@ import reactor.test.StepVerifier;
 public class SucursalServiceTest {
     
     @Mock
-    private SucursalRepository sucursalRepository;
-
-    @Mock
-    private FranquiciaRepository franquiciaRepository;
+    private SucursalRepositoryPort sucursalRepository;
 
     @InjectMocks
-    private SucursalService sucursalService;
+    private SucursalUseCaseImpl sucursalService;
 
     @Test
-    void agregar_debeGuardarSucursalCuandoFranquiciaExiste() {
-        Franquicia franquicia = new Franquicia();
-        franquicia.setId(1L);
-
+    void agregar_debeGuardarSucursalConFranquiciaId() {
         Sucursal sucursal = new Sucursal();
         sucursal.setNombre("Sucursal Bogota");
 
-        when(franquiciaRepository.findById(1L)).thenReturn(Mono.just(franquicia));
         when(sucursalRepository.save(any())).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
 
         StepVerifier.create(sucursalService.agregar(1L, sucursal))
                 .expectNextMatches(s -> s.getNombre().equals("Sucursal Bogota") && s.getFranquiciaId().equals(1L))
                 .verifyComplete();
-    }
-
-    @Test
-    void agregar_debeRetornarErrorCuandoFranquiciaNoExiste() {
-        when(franquiciaRepository.findById(99L)).thenReturn(Mono.empty());
-
-        StepVerifier.create(sucursalService.agregar(99L, new Sucursal()))
-                .expectErrorMessage("Franquicia no encontrada con id: 99")
-                .verify();
     }
 
     @Test

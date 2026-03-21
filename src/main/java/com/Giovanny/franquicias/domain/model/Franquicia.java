@@ -1,21 +1,16 @@
-package com.Giovanny.franquicias.model;
+package com.Giovanny.franquicias.domain.model;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import lombok.Data;
-
 @Data
-@Table("producto")
+@Table("franquicia")
 
-public class Producto {
-     
+public class Franquicia {
+
     @Id
     private Long id;
 
     private String nombre;
-
-    private Integer stock;
-
-    private Long sucursalId;
 }

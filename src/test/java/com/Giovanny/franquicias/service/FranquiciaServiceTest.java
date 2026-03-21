@@ -9,8 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.Giovanny.franquicias.model.Franquicia;
-import com.Giovanny.franquicias.repository.FranquiciaRepository;
+import com.Giovanny.franquicias.domain.model.Franquicia;
+import com.Giovanny.franquicias.domain.port.out.FranquiciaRepositoryPort;
+import com.Giovanny.franquicias.application.usecase.FranquiciaUseCaseImpl;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,10 +22,10 @@ import reactor.test.StepVerifier;
 public class FranquiciaServiceTest {
 
     @Mock
-    private FranquiciaRepository franquiciaRepository;
+    private FranquiciaRepositoryPort franquiciaRepository;
 
     @InjectMocks
-    private FranquiciaService franquiciaService;
+    private FranquiciaUseCaseImpl franquiciaService;
 
     @Test
     void agregar_debeRetornarFranquiciaGuardada() {

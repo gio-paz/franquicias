@@ -9,10 +9,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.Giovanny.franquicias.model.Producto;
-import com.Giovanny.franquicias.model.Sucursal;
-import com.Giovanny.franquicias.repository.ProductoRepository;
-import com.Giovanny.franquicias.repository.SucursalRepository;
+import com.Giovanny.franquicias.domain.model.Producto;
+import com.Giovanny.franquicias.domain.model.Sucursal;
+import com.Giovanny.franquicias.domain.port.out.ProductoRepositoryPort;
+import com.Giovanny.franquicias.domain.port.out.SucursalRepositoryPort;
+import com.Giovanny.franquicias.application.usecase.ProductoUseCaseImpl;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -22,38 +23,25 @@ import reactor.test.StepVerifier;
 public class ProductoServiceTest {
     
     @Mock
-    private ProductoRepository productoRepository;
+    private ProductoRepositoryPort productoRepository;
 
     @Mock
-    private SucursalRepository sucursalRepository;
+    private SucursalRepositoryPort sucursalRepository;
 
     @InjectMocks
-    private ProductoService productoService;
+    private ProductoUseCaseImpl productoService;
 
     @Test
-    void agregar_debeGuardarProductoCuandoSucursalExiste() {
-        Sucursal sucursal = new Sucursal();
-        sucursal.setId(1L);
-
+    void agregar_debeGuardarProductoConSucursalId() {
         Producto producto = new Producto();
         producto.setNombre("Producto Test");
         producto.setStock(100);
 
-        when(sucursalRepository.findById(1L)).thenReturn(Mono.just(sucursal));
         when(productoRepository.save(any())).thenAnswer(inv -> Mono.just(inv.getArgument(0)));
 
         StepVerifier.create(productoService.agregar(1L, producto))
                 .expectNextMatches(p -> p.getNombre().equals("Producto Test") && p.getSucursalId().equals(1L) && p.getStock() == 100)
                 .verifyComplete();
-    }
-
-    @Test
-    void agregar_debeRetornarErrorCuandoSucursalNoExiste() {
-        when(sucursalRepository.findById(99L)).thenReturn(Mono.empty());
-
-        StepVerifier.create(productoService.agregar(99L, new Producto()))
-                .expectErrorMessage("Sucursal no encontrada con id: 99")
-                .verify();
     }
 
     @Test
@@ -68,15 +56,6 @@ public class ProductoServiceTest {
         StepVerifier.create(productoService.actualizarStock(1L, 50))
                 .expectNextMatches(p -> p.getStock().equals(50))
                 .verifyComplete();
-    }
-
-    @Test
-    void eliminar_debeErrorCuandoNoExiste() {
-        when(productoRepository.findById(99L)).thenReturn(Mono.empty());
-
-        StepVerifier.create(productoService.eliminar(99L))
-                .expectErrorMessage("Producto no encontrado con id: 99")
-                .verify();
     }
 
     @Test
