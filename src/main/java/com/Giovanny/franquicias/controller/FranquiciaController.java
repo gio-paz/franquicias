@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import com.Giovanny.franquicias.model.Franquicia;
 import com.Giovanny.franquicias.service.FranquiciaService;
-
 import lombok.RequiredArgsConstructor;
-import java.util.List;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/franquicias")
@@ -17,21 +17,23 @@ public class FranquiciaController {
     private final FranquiciaService franquiciaService;
 
     @PostMapping
-    public ResponseEntity<Franquicia> agregar(@RequestBody Franquicia franquicia) {
+    public Mono<ResponseEntity<Franquicia>> agregar(@RequestBody Franquicia franquicia) {
         // Aquí se llamaría al servicio para agregar la franquicia
-        return ResponseEntity.status(HttpStatus.CREATED).body(franquiciaService.agregar(franquicia)); 
+        return franquiciaService.agregar(franquicia)
+                .map(f -> ResponseEntity.status(HttpStatus.CREATED).body(f));
     }
 
     @PutMapping("/{id}/nombre")
-    public ResponseEntity<Franquicia> actualizarNombre(@PathVariable Long id, @RequestParam String nombre) {
+    public Mono<ResponseEntity<Franquicia>> actualizarNombre(@PathVariable Long id, @RequestParam String nombre) {
         // Aquí se llamaría al servicio para actualizar el nombre de la franquicia
-        return ResponseEntity.ok(franquiciaService.actualizarNombre(id, nombre));
+        return franquiciaService.actualizarNombre(id, nombre)
+                .map(ResponseEntity::ok);
     }
 
     @GetMapping
-    public ResponseEntity<List<Franquicia>> listarTodas() {
+    public Flux<Franquicia> listarTodas() {
         // Aquí se llamaría al servicio para listar todas las franquicias
-        return ResponseEntity.ok(franquiciaService.listarTodas());
+        return franquiciaService.listarTodas();
     }
     
 }

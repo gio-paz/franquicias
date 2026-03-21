@@ -1,25 +1,21 @@
 package com.Giovanny.franquicias.model;
 
-import jakarta.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
+
 import lombok.Data;
 
 @Data
-@Entity
-@Table(name = "producto")
+@Table("producto")
 
 public class Producto {
      
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false)
     private Integer stock;
 
-    @ManyToOne
-    @JoinColumn(name = "sucursal_id", nullable = false)
-    private Sucursal sucursal;
+    private Long sucursalId;
 }

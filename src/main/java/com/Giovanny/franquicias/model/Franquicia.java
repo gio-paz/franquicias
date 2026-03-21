@@ -1,24 +1,16 @@
 package com.Giovanny.franquicias.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
 import lombok.Data;
-import java.util.List;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Data
-@Entity
-@Table(name = "franquicia")
+@Table("franquicia")
 
 public class Franquicia {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
     private String nombre;
-    
-    @JsonIgnore
-    @OneToMany(mappedBy = "franquicia", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sucursal> sucursales;
 }

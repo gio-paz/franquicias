@@ -1,11 +1,11 @@
 package com.Giovanny.franquicias.service;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import com.Giovanny.franquicias.model.Franquicia;
 import com.Giovanny.franquicias.repository.FranquiciaRepository;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -13,18 +13,20 @@ public class FranquiciaService {
     
     private final FranquiciaRepository franquiciaRepository;
 
-    public Franquicia agregar(Franquicia franquicia) {
+    public Mono<Franquicia> agregar(Franquicia franquicia) {
         return franquiciaRepository.save(franquicia);
     }   
 
-    public Franquicia actualizarNombre(Long id, String nuevoNombre) {
-        Franquicia franquicia = franquiciaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Franquicia no encontrada con id: " + id));
-        franquicia.setNombre(nuevoNombre);
-        return franquiciaRepository.save(franquicia);
+    public Mono<Franquicia> actualizarNombre(Long id, String nuevoNombre) {
+        return franquiciaRepository.findById(id)
+                .switchIfEmpty(Mono.error(new RuntimeException("Franquicia no encontrada con id: " + id)))
+                .flatMap(franquicia -> {
+                    franquicia.setNombre(nuevoNombre);
+                    return franquiciaRepository.save(franquicia);
+                });
     }
 
-    public List<Franquicia> listarTodas() {
+    public Flux<Franquicia> listarTodas() {
         return franquiciaRepository.findAll();
     }
 }
