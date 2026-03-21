@@ -254,6 +254,44 @@ franquicias/
 
 ---
 
+## Ejecución con Docker
+
+### Requisitos
+- Docker Desktop instalado y corriendo
+
+### Levantar todo el stack (app + MySQL)
+
+```bash
+docker compose up --build
+```
+
+Esto realiza automáticamente:
+1. Construye la imagen de la aplicación (multi-stage build con Java 21)
+2. Levanta MySQL 8.0 con la base de datos `franquisias` ya creada
+3. Ejecuta `init.sql` para crear las tablas
+4. Espera a que MySQL esté sano antes de iniciar la app
+5. Expone la API en `http://localhost:8080`
+
+### Detener los contenedores
+
+```bash
+docker compose down
+```
+
+### Detener y eliminar volúmenes (datos de MySQL)
+
+```bash
+docker compose down -v
+```
+
+### Solo construir la imagen
+
+```bash
+docker build -t franquicias-api .
+```
+
+---
+
 ## Repositorio
 
 [https://github.com/gio-paz/franquicias](https://github.com/gio-paz/franquicias)
