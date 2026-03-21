@@ -1,0 +1,11 @@
+# Estado de Terraform (puede contener contraseñas en texto plano)
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+
+# Directorio de plugins descargados por terraform init
+.terraform/
+.terraform.lock.hcl
+
+# Archivo de variables con valores reales (contraseñas, etc.)
+*.tfvars
