@@ -25,7 +25,7 @@ public class FranquiciaController {
     }
 
     @PutMapping("/{id}/nombre")
-    public Mono<ResponseEntity<Franquicia>> actualizarNombre(@PathVariable Long id, @RequestBody String nuevoNombre) {
+    public Mono<ResponseEntity<Franquicia>> actualizarNombre(@PathVariable Long id, @RequestParam String nuevoNombre) {
         return franquiciaUseCase.actualizarNombre(id, nuevoNombre)
                 .map(ResponseEntity::ok);
     }
